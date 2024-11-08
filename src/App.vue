@@ -1,47 +1,54 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import { ref } from 'vue';
+
+const playButton = ref<HTMLButtonElement | null>(null);
+const slot1 = ref<HTMLLIElement | null>(null);
+const slot2 = ref<HTMLLIElement | null>(null);
+const slot3 = ref<HTMLLIElement | null>(null);
+const slots = [slot1, slot2, slot3];
+const winNum = '777';
+
+const newGame = async (): Promise<void> => {
+    try {
+        if (!playButton.value) throw new Error();
+
+        playButton.value.disabled = true;
+
+        const results: string[] = slots.map(() => getRandomNumber());
+
+        const displayPromises = slots.map(async (slot, index) => {
+            if (slot.value) {
+                await new Promise((resolve) => setTimeout(resolve, 500 * index + 500));
+                slot.value.textContent = results[index];
+            } else throw new Error();
+        });
+
+        await Promise.all(displayPromises);
+
+        if (results.join('') === winNum) {
+            console.log('Gagné');
+        } else {
+            console.log('Perdu');
+        }
+
+        playButton.value.disabled = false;
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+const getRandomNumber = (): string => {
+    return String(Math.floor(Math.random() * 9) + 1);
+};
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+    <div class="machine">
+        <ul class="slots">
+            <li ref="slot1">0</li>
+            <li ref="slot2">0</li>
+            <li ref="slot3">0</li>
+        </ul>
+        <button ref="playButton" @click="newGame">Jouer</button>
     </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
 </template>
-
-<style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
-</style>
