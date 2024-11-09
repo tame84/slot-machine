@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useStatsStore } from '@/stores/stats';
+
+const store = useStatsStore();
 
 const playButton = ref<HTMLButtonElement | null>(null);
 const slot1 = ref<HTMLLIElement | null>(null);
@@ -13,6 +16,7 @@ const newGame = async (): Promise<void> => {
 
         playButton.value.disabled = true;
 
+        store.addGame();
         const result: string[] = slots.map(() => getResult());
 
         const displayPromises = slots.map(async (slot, index) => {
@@ -25,6 +29,7 @@ const newGame = async (): Promise<void> => {
         await Promise.all(displayPromises);
 
         if (checkResult(result)) {
+            store.addWin();
             console.log('Gagné');
         } else {
             console.log('Perdu');
