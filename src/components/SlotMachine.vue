@@ -17,7 +17,6 @@ const newGame = async (): Promise<void> => {
 
         playButton.value.disabled = true;
 
-        store.addGame();
         const result: string[] = slots.map(() => getResult());
 
         const displayPromises = slots.map(async (slot, index) => {
@@ -30,12 +29,15 @@ const newGame = async (): Promise<void> => {
         await Promise.all(displayPromises);
 
         if (checkResult(result)) {
+            console.log('t');
+
             store.addWin();
             resultMessage.value = 'Gagné !';
         } else {
             resultMessage.value = 'Perdu, peut-être une prochaine fois.';
         }
 
+        store.addGame();
         playButton.value.disabled = false;
     } catch (error) {
         console.error(error);
