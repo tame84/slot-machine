@@ -4,13 +4,13 @@ import { defineStore } from 'pinia';
 export const useStatsStore = defineStore(
     'stats',
     () => {
-        const games = ref(0);
-        const wins = ref(0);
-        const ratio = computed(() => wins.value / games.value || 0);
-        function addGame() {
+        const games = ref<number>(0);
+        const wins = ref<number>(0);
+        const ratio = computed(() => ((wins.value / games.value) * 100).toFixed(2) || 0);
+        function addGame(): void {
             games.value++;
         }
-        function addWin() {
+        function addWin(): void {
             wins.value++;
         }
 
