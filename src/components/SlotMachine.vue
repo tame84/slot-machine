@@ -16,6 +16,7 @@ const newGame = async (): Promise<void> => {
         if (!playButton.value) throw new Error();
 
         playButton.value.disabled = true;
+        resultMessage.value = null;
 
         const result: string[] = slots.map(() => getResult());
 
@@ -29,8 +30,6 @@ const newGame = async (): Promise<void> => {
         await Promise.all(displayPromises);
 
         if (checkResult(result)) {
-            console.log('t');
-
             store.addWin();
             resultMessage.value = 'Gagné !';
         } else {
