@@ -9,6 +9,7 @@ const slot1 = ref<HTMLLIElement | null>(null);
 const slot2 = ref<HTMLLIElement | null>(null);
 const slot3 = ref<HTMLLIElement | null>(null);
 const slots = [slot1, slot2, slot3];
+const resultMessage = ref<string | null>(null);
 
 const newGame = async (): Promise<void> => {
     try {
@@ -30,9 +31,9 @@ const newGame = async (): Promise<void> => {
 
         if (checkResult(result)) {
             store.addWin();
-            console.log('Gagné');
+            resultMessage.value = 'Gagné !';
         } else {
-            console.log('Perdu');
+            resultMessage.value = 'Perdu, peut-être une prochaine fois.';
         }
 
         playButton.value.disabled = false;
@@ -60,12 +61,15 @@ const checkResult = (results: string[]): boolean => {
 </script>
 
 <template>
-    <div class="machine">
-        <ul class="slots">
-            <li ref="slot1">0</li>
-            <li ref="slot2">0</li>
-            <li ref="slot3">0</li>
-        </ul>
-        <button ref="playButton" @click="newGame">Jouer</button>
+    <div>
+        <div class="machine">
+            <ul class="slots">
+                <li ref="slot1">0</li>
+                <li ref="slot2">0</li>
+                <li ref="slot3">0</li>
+            </ul>
+            <button ref="playButton" @click="newGame">Jouer</button>
+        </div>
+        <p v-if="resultMessage">{{ resultMessage }}</p>
     </div>
 </template>
